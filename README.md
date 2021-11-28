@@ -94,3 +94,45 @@ lambda =(3x * p^2 + a) / 2yp
 
 ### <a name="signature"></a> Алгоритм цифрового підпису еліптичної кривої
 
+#### Код підписання
+
+    ec = EllipticCurve(GF())
+    base_point = ec.base_point()
+    ds = DigitalSignature(ec, base_point)
+
+    d = ds.gen_private_key()
+    print(f'private key = {d}')
+
+    Q = ds.gen_public_key(d)
+    print(f'public key = {Q}')
+
+    message = os.urandom(16)
+    print(f'message = {message}')
+
+    signature = ds.sign(message, d)[1]
+    print(f'signature = {signature}')
+
+#### Результат
+
+![img_1](img_for_readme/img_1.png)
+
+#### Код верифікації
+
+    class TestDigitalSignature(unittest.TestCase):
+
+        def test_sign(self):
+            ec = EllipticCurve(GF())
+            base_point = ec.base_point()
+            ds = DigitalSignature(ec, base_point)
+            d = ds.gen_private_key()
+            Q = ds.gen_public_key(d)
+            message = os.urandom(16)
+            message, signature = ds.sign(message, d)
+            self.assertTrue(ds.verify(message, signature, Q))
+
+    if __name__ == '__main__':
+    unittest.main()
+
+#### Результат
+
+![img_2](img_for_readme/img_2.png)
